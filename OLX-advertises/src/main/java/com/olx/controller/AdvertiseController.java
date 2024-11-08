@@ -20,13 +20,19 @@ import com.olx.service.AdvertiseService;
 @RestController
 @CrossOrigin
 public class AdvertiseController {
-
+	
+	private boolean termed;
 	@Autowired
 	private AdvertiseService advertiseService;
 	
 	@GetMapping(value="/advertise", produces=MediaType.APPLICATION_JSON_VALUE)
 	public List<AdvertiseDTO> getAllAdvertises() {
-		return advertiseService.getAllAdvertises();
+		if(termed= false){
+			system.out.println("cannot get advertise as contract is terminated");
+		}else {
+            	return advertiseService.getAllAdvertises();
+       		 }
+        	return getAllAdvertises();
 	}
 
 	@GetMapping(value="/advertise/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
