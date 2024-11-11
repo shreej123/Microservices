@@ -1,0 +1,29 @@
+name: AI Code Reviewer
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+  security-events: write
+  checks: write
+  id-token: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: AI Code Reviewer
+        uses: shreej123/ai-code-reviewer@main
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_MODEL: "gpt-4-1106-preview"
+          exclude: "yarn.lock,dist/**"
