@@ -78,4 +78,36 @@ public class AdvertiseServiceImpl implements AdvertiseService {
 		return advertises;
 	}
 
+
+private static final int MAX_RETRIES = 5;
+
+    public void processData(List<String> data) {
+        for (int i = 0; i < data.size(); i++) {
+            String item = data.get(i);
+            if (item != null) {
+                processItem(item);
+            }
+        }
+    }
+
+    private void processItem(String item) {
+        for (int i = 0; i < MAX_RETRIES; i++) {
+            try {
+                // Simulate processing
+                Thread.sleep(100);
+                if (Math.random() > 0.5) {
+                    throw new RuntimeException("Random failure");
+                }
+                System.out.println("Processed: " + item);
+                break;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (RuntimeException e) {
+                if (i == MAX_RETRIES - 1) {
+                    System.err.println("Failed to process: " + item);
+                }
+            }
+        }
+    }
+
 }
