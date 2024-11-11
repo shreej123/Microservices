@@ -1,0 +1,88 @@
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import java.util.List;
+import java.util.ArrayList;
+
+@RestController
+@RequestMapping("/api")
+public class ExampleController {
+
+    @Autowired
+    private ExampleService exampleService;
+
+    @GetMapping("/items")
+    public ResponseEntity<List<String>> getItems() {
+        List<String> items = exampleService.getItems();
+        if (items.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @PostMapping("/items")
+    public ResponseEntity<String> addItem(@RequestBody String item) {
+        exampleService.addItem(item);
+        return new ResponseEntity<>("Item added", HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/items/{id}")
+    public ResponseEntity<String> deleteItem(@PathVariable int id) {
+        exampleService.deleteItem(id);
+        return new ResponseEntity<>("Item deleted", HttpStatus.OK);
+    }
+}
+
+@Service
+public class TestService {
+
+    private List<String> items = new ArrayList<>();
+
+    public List<String> getItems() {
+        return items;
+    }
+
+    public void addItem(String item) {
+        items.add(item);
+    }
+
+    public void deleteItem(int id) {
+        if (id >= 0 && id < items.size()) {
+            items.remove(id);
+        }
+    }
+}
+
+public class ExampleService {
+    private static final int MAX_RETRIES = 5;
+
+    public void processData(List<String> data) {
+        for (int i = 0; i < data.size(); i++) {
+            String item = data.get(i);
+            if (item != null) {
+                processItem(item);
+            }
+        }
+    }
+
+    private void processItem(String item) {
+        for (int i = 0; i < MAX_RETRIES; i++) {
+            try {
+                // Simulate processing
+                Thread.sleep(100);
+                if (Math.random() > 0.5) {
+                    throw new RuntimeException("Random failure");
+                }
+                System.out.println("Processed: " + item);
+                break;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (RuntimeException e) {
+                if (i == MAX_RETRIES - 1) {
+                    System.err.println("Failed to process: " + item);
+                }
+            }
+        }
+    }
+}
