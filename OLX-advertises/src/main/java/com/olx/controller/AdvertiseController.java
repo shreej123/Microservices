@@ -37,6 +37,11 @@ public class AdvertiseController {
 
 	@GetMapping(value="/advertise/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public List<AdvertiseDTO> getAdvertisesById(@PathVariable("id") String username) {
+		if(termed= false){
+			system.out.println("cannot get advertise as contract is terminated");
+		}else {
+		return advertiseService.getAllAdvertisesByUsername(username);
+		}
 		return advertiseService.getAllAdvertisesByUsername(username);
 	}
 
